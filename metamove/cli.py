@@ -1,7 +1,6 @@
 import os
 from typing import List
 import click
-from tqdm import tqdm
 from metamove.yaml_transformer import transform_yaml
 
 def process_files(input_files: List[str], output_dir: str, in_place: bool = False) -> None:
@@ -12,28 +11,30 @@ def process_files(input_files: List[str], output_dir: str, in_place: bool = Fals
     click.echo("\nStarting transformation...")
     successful = 0
     failed = 0
+    failed_files = []
     
-    for input_file in tqdm(input_files, desc="Processing YAML files"):
-        try:
-            if in_place:
-                output_file = input_file
-                click.echo(f"\nTransforming in place: {input_file}")
-            else:
-                output_file = os.path.join(output_dir, os.path.basename(input_file))
-                click.echo(f"\nTransforming: {input_file}")
-                click.echo(f"Output: {output_file}")
-            
-            transform_yaml(input_file, output_file)
-            click.echo(f"✓ Successfully transformed {input_file}")
-            successful += 1
-        except Exception as e:
-            click.echo(f"✗ Error processing {input_file}: {str(e)}", err=True)
-            failed += 1
+    with click.progressbar(input_files, label="Processing YAML files", show_pos=True) as files:
+        for input_file in files:
+            try:
+                if in_place:
+                    output_file = input_file
+                    files.label = f"Transforming in place: {click.style(input_file, fg='blue')}"
+                else:
+                    output_file = os.path.join(output_dir, os.path.basename(input_file))
+                    files.label = f"Transforming: {click.style(input_file, fg='blue')}"
+                
+                transform_yaml(input_file, output_file)
+                successful += 1
+            except Exception as e:
+                failed += 1
+                failed_files.append((input_file, str(e)))
     
     click.echo("\nTransformation Summary:")
-    click.echo(f"✓ Successfully transformed: {successful} files")
+    click.echo(click.style(f"✓ Successfully transformed: {successful} files", fg='green', bold=True))
     if failed > 0:
-        click.echo(f"✗ Failed to transform: {failed} files", err=True)
+        click.echo(click.style(f"✗ Failed to transform: {failed} files", fg='red', bold=True), err=True)
+        for file, error in failed_files:
+            click.echo(click.style(f"  - {file}: {error}", fg='red'), err=True)
 
 @click.command()
 @click.argument('input_files', nargs=-1, type=click.Path(exists=True))
@@ -72,7 +73,7 @@ def cli(input_files: List[str], output_dir: str, in_place: bool) -> None:
 
     click.echo(f"Found {len(yaml_files)} YAML files to process")
     if in_place:
-        click.echo("⚠️  Warning: Files will be modified in place. Make sure you have backups!")
+        click.echo(click.style("⚠️  Warning: Files will be modified in place. Make sure you have backups!", fg='yellow', bold=True))
         if not click.confirm("Do you want to continue?"):
             return
     
