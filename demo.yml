@@ -1,0 +1,198 @@
+version: 2
+
+models:
+  # Model with both meta and tags at root level
+  - name: customers
+    description: "Customer information"
+    meta:
+      owner: "Data Team"
+      refresh: "daily"
+    tags: ["core", "customer"]
+    columns:
+      - name: customer_id
+        description: "Primary key"
+        meta:
+          is_primary_key: true
+          data_type: "integer"
+        tags:
+          - identifier
+          - primary
+        tests:
+          - unique
+          - not_null
+      
+      - name: email
+        description: "Email address"
+        meta:
+          pii: true
+          masking: "full"
+        tags: ["contact", "personal"]
+        tests:
+          - unique
+
+  # Model with nested meta and tags
+  - name: orders
+    description: "Order information"
+    meta:
+      owner: 
+        team: "Data Team"
+        contact: "orders@company.com"
+    tags: 
+      - "core"
+      - "transaction"
+    columns:
+      - name: order_id
+        description: "Primary key"
+        meta:
+          is_primary_key: true
+          data_type: "uuid"
+        tags: ["identifier", "primary"]
+        tests:
+          - unique
+
+  # Model with existing config block
+  - name: with_existing_config
+    description: "Model with existing config"
+    config:
+      custom: "already here"
+
+  # Model with existing config and meta
+  - name: with_existing_config_and_meta
+    description: "Model with existing config and meta"
+    config:
+      meta:
+        should: "be merged"
+      other: "value"
+
+  # Model with meta as a single value
+  - name: meta_single_value
+    description: "Meta is a single value"
+    meta: 33
+
+  # Model with meta as a folded block
+  - name: meta_folded
+    description: "Meta is a folded block"
+    meta: >-
+      This is a folded
+      block of text
+      with multiple lines.
+
+  # Model with meta as a list
+  - name: meta_list
+    description: "Meta is a list"
+    meta:
+      - item1
+      - item2
+      - item3
+
+  # Model with meta containing a colon in value
+  - name: meta_colon
+    description: "Meta value contains a colon"
+    meta:
+      weird: "value:with:colons"
+
+  # Model with meta and a comment
+  - name: meta_with_comment
+    description: "Meta with a comment"
+    meta: # this is a meta comment
+      foo: bar
+      # another comment
+      baz: qux
+
+  # Model with name/description not at the top
+  - extra: before
+    name: not_top
+    something: else
+    description: "Name and description are not at the top"
+    meta:
+      moved: true
+    after: field
+
+  # Model with only name
+  - name: only_name
+    meta:
+      just: name
+    tags: ["tag1"]
+    another: field
+
+  # Model with only description
+  - description: only_description
+    meta:
+      just: description
+    tags:
+      - tag2
+    yet: another
+
+  # Model with neither name nor description
+  - meta:
+      no: name_or_description
+    tags:
+      - tag3
+    field: present
+
+  # Model with only meta
+  - name: only_meta
+    meta:
+      just: meta
+    field: here
+
+  # Model with only tags
+  - name: only_tags
+    tags:
+      - just_tag
+    field: here
+
+  # New test cases for config placement precedence
+  - name: test_config_precedence_1
+    description: "Test config placement at existing config location"
+    complex:
+      nested:
+        property: "value"
+    config:
+      existing: "config"
+    meta:
+      should: "move here"
+    tags: ["test"]
+    after:
+      field: "value"
+
+  - name: test_config_precedence_2
+    description: "Test config placement at meta location"
+    before:
+      field: "value"
+    complex:
+      nested:
+        property: "value"
+    meta:
+      should: "move here"
+    tags: ["test"]
+    other: "field"
+    after:
+      field: "value"
+
+  - name: test_config_precedence_3
+    description: "Test config placement at tags location"
+    before:
+      field: "value"
+    complex:
+      nested:
+        property: "value"
+    tags: ["test"]
+    other: "field"
+    another: "field"
+    after:
+      field: "value"
+
+  - name: test_config_precedence_4
+    description: "Test config placement at end when no reference points"
+    before:
+      field: "value"
+    complex:
+      nested:
+        property: "value"
+    other: "field"
+    another: "field"
+    third: "field"
+    after:
+      field: "value"
+
