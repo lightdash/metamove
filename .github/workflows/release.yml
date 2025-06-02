@@ -88,7 +88,7 @@ jobs:
   publish-to-pypi:
     name: Publish Python 🐍 distribution 📦 to PyPI
     needs: build-python-package
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/p/metamove
@@ -108,7 +108,7 @@ jobs:
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
     needs: build-python-package
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     environment:
       name: testpypi
       url: https://test.pypi.org/p/metamove
