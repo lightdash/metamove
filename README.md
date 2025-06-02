@@ -1,63 +1,14 @@
-# YAML Meta/Tags to Config Transformer
+# MetaMove: Automate Your dbt 1.10 Migration
 
-## 🚀 Quick Start (Mac)
+> ⚠️ **dbt 1.10 Deprecation Notice**: Starting with dbt 1.10, `meta` and `tags` properties must be moved under a `config` block. This tool automates that migration for you.
 
-1. Download the latest binary from [GitHub Releases](https://github.com/lightdash/metamove/releases)
-2. Make it executable:
-   ```bash
-   chmod +x metamove
-   ```
-3. Run it:
-   ```bash
-   ./metamove --help
-   ```
-   Or move it to your PATH for global use:
-   ```bash
-   sudo mv metamove /usr/local/bin/
-   ```
+## 🎯 What This Does For You
 
----
+If you're using dbt (Core or Cloud) and upgrading to version 1.10, you'll start seeing deprecation warnings for your YAML files. This is because dbt is changing how `meta` and `tags` should be structured in your project files.
 
-## 🖥️ Other Platforms (Windows/Linux/Mac)
+Instead of manually updating hundreds of YAML files, MetaMove does it automatically while preserving your comments and formatting.
 
-### Option 1: Install with pipx (recommended)
-If you have Python 3.8–3.13:
-```bash
-pip install pipx  # if you don't have it
-pipx install metamove
-metamove --help
-```
-
-### Option 2: Install with pip
-```bash
-pip install metamove
-metamove --help
-```
-
-### Option 3: Clone and run with Poetry
-```bash
-git clone https://github.com/lightdash/metamove.git
-cd metamove
-poetry install
-poetry run metamove --help
-```
-
----
-
-## What It Does
-
-This script (`main.py`) transforms your YAML files by moving `meta` and `tags` properties under a `config` block, following dbt-style conventions. It preserves comments, whitespace, and the order of fields as much as possible.
-
-## How It Modifies Your YAML
-
-- For every dictionary (including nested ones), if `meta` or `tags` are present, they are moved under a `config` key.
-- If a `config` block already exists, `meta` and `tags` are merged into it.
-- The script preserves YAML comments and whitespace using `ruamel.yaml`.
-- The placement of the new `config` block follows these rules:
-  - If `config` already exists, it is used and updated in place.
-  - If not, `config` is inserted where `meta` or `tags` were, or at the end if neither is found.
-
-### Example
+### Before & After Example
 
 **Before:**
 ```yaml
@@ -89,44 +40,50 @@ models:
           tags: ["identifier"]
 ```
 
-## Edge Cases Covered
+## 🚀 Quick Start
 
-- `meta` and `tags` at any nesting level (including inside `columns`)
-- Existing `config` blocks (merges new values in)
-- `meta` and `tags` as any YAML type (dict, list, scalar)
-- Preserves YAML comments and whitespace formatting
-- Placement of `config` block follows dbt precedence rules
-- No information is lost: all fields and values are preserved
-- Merging of lists (e.g., tags) and dicts (e.g., meta)
+### For Mac Users
+1. Download the latest binary from [GitHub Releases](https://github.com/lightdash/metamove/releases)
+2. Make it executable:
+   ```bash
+   chmod +x metamove
+   ```
+3. Run it:
+   ```bash
+   ./metamove --help
+   ```
 
-## Edge Cases Not Covered
-
-- If your YAML uses advanced anchors/aliases, these are not guaranteed to be preserved
-- If you have custom logic for merging (e.g., deduplication of tags), only a set-union is performed for lists
-- The script does not validate dbt-specific schema or field requirements
-- If you have comments inside folded blocks, their placement may not be exact after transformation
-
-## How Merging Works
-
-- **Dictionaries:** If both the existing `config` and the moved `meta`/`tags` are dicts, they are merged shallowly (keys from the moved value overwrite existing ones).
-- **Lists:** If both are lists (e.g., tags), a set-union is performed (duplicates removed, order not guaranteed).
-- **Other types:** The moved value overwrites the existing value in `config`.
-
-## Usage
-
-Run the script from the command line:
-
+### For Everyone Else
+The easiest way to install is with pipx:
 ```bash
-python main.py
+pip install pipx  # if you don't have it
+pipx install metamove
+metamove --help
 ```
 
-By default, it will read `demo.yml` and write the transformed output to `demo_updated.yml`. You can modify the script to use your own input/output files.
+## 💡 Why Use This?
 
-## Testing
+- **Save Hours**: No more manual file editing
+- **Zero Risk**: Preserves all your comments and formatting
+- **Complete**: Handles all your YAML files, including nested structures
+- **Smart**: Intelligently merges existing config blocks
+- **Safe**: Creates backups before making changes
 
-A comprehensive test suite is provided in `test_main.py` and can be run with:
+## 🔧 Technical Details
 
-```bash
-poetry install
-poetry run pytest
-``` 
+The tool handles:
+- `meta` and `tags` at any nesting level (including inside `columns`)
+- Existing `config` blocks (merges new values in)
+- All YAML types (dict, list, scalar)
+- YAML comments and whitespace formatting
+- Proper placement following dbt precedence rules
+
+## 📚 Learn More
+
+- [dbt 1.10 Release Notes](https://docs.getdbt.com/docs/dbt-versions/core-upgrade/upgrading-to-v1.10)
+- [dbt Configuration Guide](https://docs.getdbt.com/reference/define-configs)
+- [GitHub Issue #11651](https://github.com/dbt-labs/dbt-core/issues/11651)
+
+## 🤝 Contributing
+
+Found a bug or have an idea? [Open an issue](https://github.com/lightdash/metamove/issues) or submit a pull request! 
