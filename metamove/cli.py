@@ -37,26 +37,29 @@ def process_files(input_files: List[str], output_dir: str, in_place: bool = Fals
 
 @click.command()
 @click.argument('input_files', nargs=-1, type=click.Path(exists=True))
-@click.option('--output-dir', '-o', default='transformed', help='Output directory for transformed files')
-@click.option('--in-place', '-i', is_flag=True, help='Transform files in place instead of creating copies')
+@click.option('--output-dir', '-o', default='transformed', 
+    help='Directory where transformed files will be saved (default: transformed)')
+@click.option('--in-place', '-i', is_flag=True, 
+    help='Modify files in place instead of creating copies (use with caution)')
 def cli(input_files: List[str], output_dir: str, in_place: bool) -> None:
     """Transform YAML files by moving meta and tags into config sections.
-    
+
     This tool helps migrate your dbt YAML files to be compatible with dbt 1.10
     by moving meta and tags properties under config sections.
-    
+
     Examples:
+
         # Transform a single file
-        metamove models/my_model.yml
-        
+        $ metamove models/my_model.yml
+
         # Transform multiple files to a specific directory
-        metamove models/*.yml -o transformed_models
-        
+        $ metamove models/*.yml -o transformed_models
+
         # Transform files in place
-        metamove models/*.yml -i
-        
+        $ metamove models/*.yml -i
+
         # Transform all YAML files in a dbt project
-        metamove models/*.yml seeds/*.yml snapshots/*.yml
+        $ metamove models/*.yml seeds/*.yml snapshots/*.yml
     """
     if not input_files:
         click.echo(click.get_current_context().get_help())
