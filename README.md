@@ -61,6 +61,46 @@ pipx install metamove
 metamove --help
 ```
 
+## 📋 Usage Examples
+
+### Basic Usage
+Transform a single YAML file:
+```bash
+metamove models/my_model.yml
+```
+
+Transform multiple files:
+```bash
+metamove models/*.yml models/schema/*.yml
+```
+
+### Output Options
+Transform files and save to a specific directory:
+```bash
+metamove models/*.yml -o transformed_models
+```
+
+Transform files in place (modify original files):
+```bash
+metamove models/*.yml -i
+```
+
+### Working with dbt Projects
+Transform all YAML files in your dbt project:
+```bash
+metamove models/*.yml seeds/*.yml snapshots/*.yml
+```
+
+Transform specific model directories:
+```bash
+metamove models/marts/*.yml models/staging/*.yml
+```
+
+### Best Practices
+1. Always backup your files before running transformations
+2. Use `-o` to test changes in a separate directory first
+3. Once verified, use `-i` to update files in place
+
 ## 💡 Why Use This?
 
 - **Save Hours**: No more manual file editing

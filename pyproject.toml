@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "metamove"
-version = "0.2.0"
+version = "0.3.0"
 description = "Transform YAML: move meta under config.meta"
 authors = ["Oliver Laslett <oliver@lightdash.com>"]
 readme = "README.md"
