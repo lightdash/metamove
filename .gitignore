@@ -21,7 +21,6 @@ wheels/
 *.egg
 
 # Poetry
-poetry.lock
 .venv/
 .venv
 venv/
@@ -29,7 +28,6 @@ ENV/
 
 # PyInstaller
 *.manifest
-*.spec
 build/
 dist/
 *.exe

@@ -10,6 +10,8 @@ on:
 jobs:
   build-and-release:
     runs-on: macos-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,7 +32,7 @@ jobs:
 
       - name: Build binary with PyInstaller
         run: |
-          poetry run pyinstaller metamove.spec
+          poetry run pyinstaller --clean metamove.spec
 
       - name: Get version
         id: get_version
@@ -50,4 +52,4 @@ jobs:
       - name: Publish to PyPI
         run: |
           poetry build
-          poetry publish --no-interaction --username __token__ --password ${{ secrets.PYPI_TOKEN }} 
+          poetry publish --no-interaction 
