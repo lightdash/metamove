@@ -1,6 +1,6 @@
 # MetaMove: Automate Your dbt 1.10 Migration
 
-> ⚠️ **dbt 1.10 Deprecation Notice**: Starting with dbt 1.10, `meta` and `tags` properties must be moved under a `config` block. This tool automates that migration for you.
+> ✅ **dbt 1.10 Change**: Starting with dbt 1.10, `meta` and `tags` properties must be moved under a `config` block. This tool automates that migration for you.
 
 ## 🎯 What This Does For You
 
@@ -42,18 +42,6 @@ models:
 
 ## 🚀 Quick Start
 
-### For Mac Users
-1. Download the latest binary from [GitHub Releases](https://github.com/lightdash/metamove/releases)
-2. Make it executable:
-   ```bash
-   chmod +x metamove
-   ```
-3. Run it:
-   ```bash
-   ./metamove --help
-   ```
-
-### For Everyone Else
 The easiest way to install is with pipx:
 ```bash
 pip install pipx  # if you don't have it
@@ -64,41 +52,48 @@ metamove --help
 ## 📋 Usage Examples
 
 ### Basic Usage
-Transform a single YAML file:
+Transform a single YAML file into a new directory `transformed`:
 ```bash
-metamove models/my_model.yml
+metamove models/my_model.yml # saves to ./transformed/
 ```
 
-Transform multiple files:
+Transform multiple files into `transformed`:
 ```bash
-metamove models/*.yml models/schema/*.yml
+metamove models/* models/schema/*
 ```
 
 ### Output Options
-Transform files and save to a specific directory:
+By default, transformed files are saved to a `transformed` directory in your current location so your original files aren't modified:
 ```bash
-metamove models/*.yml -o transformed_models
+metamove models/*  # saves to ./transformed/
 ```
 
-Transform files in place (modify original files):
+Instead you can transform files and save to a specific directory:
 ```bash
-metamove models/*.yml -i
+metamove models/* -o transformed_models
+```
+
+Once you're feeling confident, transform files in place (modify original files):
+```bash
+metamove models/* -i
 ```
 
 ### Working with dbt Projects
-Transform all YAML files in your dbt project:
+The tool automatically processes only `.yml` and `.yaml` files, so you can use simple wildcards:
 ```bash
-metamove models/*.yml seeds/*.yml snapshots/*.yml
-```
+# Transform all YAML files in your dbt project
+metamove models/* seeds/* snapshots/*
 
-Transform specific model directories:
-```bash
-metamove models/marts/*.yml models/staging/*.yml
+# Transform all YAML files in nested directories
+metamove models/**/*
+
+# Transform specific model directories
+metamove models/marts/* models/staging/*
 ```
 
 ### Best Practices
 1. Always backup your files before running transformations
-2. Use `-o` to test changes in a separate directory first
+2. Use the default output directory first to test changes
 3. Once verified, use `-i` to update files in place
 
 ## 💡 Why Use This?
@@ -126,4 +121,19 @@ The tool handles:
 
 ## 🤝 Contributing
 
-Found a bug or have an idea? [Open an issue](https://github.com/lightdash/metamove/issues) or submit a pull request! 
+Found a bug or have an idea? [Open an issue](https://github.com/lightdash/metamove/issues) or submit a pull request!
+
+## 🍎 Mac Binary (Coming Soon)
+
+> Note: The Mac binary is currently being signed and will be available soon. For now, please use the pipx installation method above.
+
+Once available, Mac users will be able to:
+1. Download the latest binary from [GitHub Releases](https://github.com/lightdash/metamove/releases)
+2. Make it executable:
+   ```bash
+   chmod +x metamove
+   ```
+3. Run it:
+   ```bash
+   ./metamove --help
+   ``` 
